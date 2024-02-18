@@ -8,5 +8,5 @@
 
 
 # Go Live
-1. Visit `https://www.github.io/plgnzaga/randomUserGenerator` .
+1. To see the actual app live, just go to `https://plgnzaga.github.io/random-user-generator` .
 
