@@ -8,5 +8,5 @@
 
 
 # Go Live
-1. To see the actual app live, just go to `https://plgnzaga.github.io/random-user-generator` .
+1. To see the actual app live, just go to `https://plgnzaga.github.io/randomUserGenerator` or `https://pgnzaga-randomusergenerator.netlify.app/` .
 

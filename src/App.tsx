@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <Routes>
-          <Route path="/random-user-generator" index element={<Home />}  />
+          <Route path="/" index element={<Home />}  />
       </Routes>
     </>
   );
