@@ -1,9 +1,46 @@
 import axios from "axios";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useReducer, useState } from "react";
 import { HiOutlineSparkles  } from "react-icons/hi2";
 import userInfoComponent from "./UserInfoComponent";
 
 const Home = () => {
+    
+    const INITIAL_STATE: InitialState = {
+        userInfo:[],
+        isLoading:false
+    }
+
+    const reducer = (state:any,action:{type:string,payload:[]}) => {
+        switch(action?.type){
+            case "FETCH_USERS" :
+                return {
+                    ...state,
+                    userInfo:action.payload
+                }
+            case "VIEW_USER" :
+                return {
+                    ...state,
+                    values:action.payload
+                }
+            case "REMOVE_USER" :
+                return {
+                    ...state,
+                    
+                }
+            case "RESET_FIELD":
+                return{
+                    ...state
+                }
+            default:
+                return state;
+        }
+    }
+
+    interface InitialState {
+        userInfo:[],
+        isLoading:boolean,
+
+    }
 
     interface UserInfoResponse {
         email: string,
@@ -14,6 +51,8 @@ const Home = () => {
         imgSrc: string
     }
     
+    const [state,dispatch] = useReducer(reducer,INITIAL_STATE);
+
     const [userInfo, setUserInfo] = useState<UserInfoResponse[]>([]);
     const [usersHistory, setUsersHistory] = useState<UserInfoResponse[]>([]);
 
@@ -30,7 +69,8 @@ const Home = () => {
                     imgSrc: i.picture.large
                 }
             });
-            setUserInfo(result);
+            dispatch({type:'FETCH_USERS',payload:result})
+            //setUserInfo(result);
             
         } catch (error) {
 
@@ -38,7 +78,7 @@ const Home = () => {
     }
 
     const saveToLocalStorage = () => {
-        setUsersHistory(prev => [...userInfo,...prev]);
+        setUsersHistory(prev => [...state.userInfo,...prev]);
         localStorage.setItem("user-info",JSON.stringify(usersHistory))
     }
 
@@ -47,15 +87,15 @@ const Home = () => {
     }, [])
     
     useEffect(() => {
-        
         saveToLocalStorage();
-    },[userInfo])
+    },[state.userInfo])
 
     return <>
         <section className="wrapper">
             <div className="container">
                 <section className="profile-section d-grid">
-                    {userInfo?.map((x) =>
+                    {/* {JSON.stringify(state.userInfo)} */}
+                    {state.userInfo?.map((x:any) =>
                         <>
                             <div className="image-holder">
                                 <img src={x.imgSrc} className="profile-pic"></img>
@@ -69,17 +109,19 @@ const Home = () => {
                             {userInfoComponent("Age", x.age)}
                         </>
                     )}
+                   
                     <button className="generate" onClick={() => {
                         fetchUserInfo();
                     }}>
                         <div style={{display:'flex',justifyContent:'center'}}>
                         Generate <HiOutlineSparkles style={{fontSize:'1rem'}}/>
                         </div>
-                    </button>
+                    </button> 
                 </section>
                 <section className="user-log-section">
-                    <div>
-                        <span><b>Generated User Logs</b></span>
+                    <div style={{display:"flex"}}>
+                    <div style={{flexGrow:'1'}}><strong>Generated User Logs</strong></div>
+                    <div style={{flexGrow:'1',textAlign:'right'}}><b>Count:{usersHistory?.length}</b></div>
                     </div>
                     <div>
                         <div className="user-log-header">
@@ -105,8 +147,6 @@ const Home = () => {
                 </section>
             </div>
         </section>
-
-       
     </>
 }
 
